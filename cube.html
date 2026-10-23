@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="日本のファッションデザイナーの高次元意味ベクトルを3D・2D投影で探索する実験ページ">
+<title>Semantic Cube — Japanese Designers Graph</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0d12;--panel:#141821;--line:#2c3442;--text:#edf2fa;--muted:#9ba8bb;--accent:#d5ff65;--blue:#75c7ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#202b3a 0, var(--bg) 58%);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:22px clamp(16px,4vw,44px);border-bottom:1px solid var(--line);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}h1{font-size:clamp(1.4rem,3vw,2.2rem);margin:0}p{margin:.35rem 0;color:var(--muted)}a{color:var(--accent)}.nav{display:flex;gap:14px;flex-wrap:wrap}
+main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}.panel{border:1px solid var(--line);background:rgba(20,24,33,.92);border-radius:14px;overflow:hidden;min-width:0}.head{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}h2{font-size:1rem;margin:0}.tag{font-size:.75rem;color:var(--accent);border:1px solid #59683c;padding:3px 8px;border-radius:99px}
+#three{height:min(64vh,610px);min-height:380px;position:relative}#three canvas{display:block;width:100%;height:100%}.legend{display:flex;gap:12px;flex-wrap:wrap;padding:0 16px 14px;color:var(--muted);font-size:.8rem}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.controls{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:14px 16px 16px}.slider{display:grid;grid-template-columns:minmax(100px,150px) minmax(120px,1fr) minmax(110px,220px);gap:12px;align-items:center;min-width:0}.slider-head{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.9rem}.slider-head output{font-size:.82rem;text-align:right}.slider input{width:100%;cursor:pointer}.slider.axis-x input{accent-color:#a3e635}.slider.axis-y input{accent-color:#65c466}.slider.axis-z input{accent-color:#34a853}.slider.people input{accent-color:#fb923c}.slider.axis-x .slider-head output{color:#a3e635}.slider.axis-y .slider-head output{color:#65c466}.slider.axis-z .slider-head output{color:#34a853}.slider.people .slider-head output{color:#fb923c}.slider small{color:var(--muted);font-size:.75rem}@media(max-width:680px){.slider{grid-template-columns:100px minmax(80px,1fr);gap:8px}.slider small{grid-column:1/-1}#three{height:56vh;min-height:320px}}
+#p5view{height:260px;width:100%}#p5view canvas{display:block;width:100%!important;height:100%!important}.side{padding:16px}.side h2{margin-bottom:8px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.metric{background:#0b0e14;border:1px solid var(--line);border-radius:9px;padding:10px}.metric strong{display:block;font-size:1.2rem}.metric span{color:var(--muted);font-size:.75rem}.axis-list{display:grid;gap:8px;margin-top:12px}.axis{display:grid;grid-template-columns:90px 1fr 28px;gap:8px;align-items:center;font-size:.8rem}.track{height:6px;background:#2b3240;border-radius:10px;overflow:hidden}.fill{height:100%;background:var(--blue);border-radius:10px}.note{padding:12px 16px;border-top:1px solid var(--line);font-size:.82rem}.node-list{display:grid;gap:6px;margin-top:12px}.node-row{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:#0b0e14;border:1px solid var(--line);border-radius:8px;cursor:pointer}.node-row:hover,.node-row.selected{border-color:var(--accent)}.small{font-size:.8rem}.warn{color:#ffd58a}
+
+@media(max-width:380px){#three{min-height:270px}.axis{grid-template-columns:82px 1fr 25px}.tag{font-size:.68rem}.head h2{font-size:.9rem}}
+</style>
+</head>
+<body data-view="cube">
+<header><div><h1>Semantic Cube</h1><p>グリッドと3軸で意味空間を探索</p><nav class="nav"><a href="space.html">Globe（2軸）</a></nav></div></header>
+
+<main>
+<section class="panel">
+ <div id="three" aria-label="ドラッグで回転できる3Dセマンティックグローブ"></div>
+ <div class="controls" aria-label="グローブ操作スライダー">
+  <label class="slider axis-x"><span class="slider-head"><span>X軸</span><output id="axisXValue">テクノロジー</output></span><input id="axisX" type="range" min="0" max="7" step="1" value="0" aria-label="X軸の意味次元"><small>左右の配置を決める</small></label>
+  <label class="slider axis-y"><span class="slider-head"><span>Y軸</span><output id="axisYValue">造形実験</output></span><input id="axisY" type="range" min="0" max="7" step="1" value="2" aria-label="Y軸の意味次元"><small>上下の配置を決める</small></label>
+  <label class="slider axis-z"><span class="slider-head"><span>Z軸</span><output id="axisZValue">素材・技法</output></span><input id="axisZ" type="range" min="0" max="7" step="1" value="1" aria-label="Z軸の意味次元"><small>奥行きの配置を決める</small></label>
+  <label class="slider people"><span class="slider-head"><span>表示人数</span><output id="peopleCountValue">4人</output></span><input id="peopleCount" type="range" min="1" max="4" step="1" value="4" aria-label="表示する人物の数"><small>1〜4人を表示</small></label>
+ </div>
+</section>
+</main>
+<script src="semantic-space.js"></script>
+</body>
+</html>
