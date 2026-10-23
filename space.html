@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="日本のファッションデザイナーの高次元意味ベクトルを3D・2D投影で探索する実験ページ">
+<title>Semantic Space — Japanese Designers Graph</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0d12;--panel:#141821;--line:#2c3442;--text:#edf2fa;--muted:#9ba8bb;--accent:#d5ff65;--blue:#75c7ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#202b3a 0, var(--bg) 58%);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:22px clamp(16px,4vw,44px);border-bottom:1px solid var(--line);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}h1{font-size:clamp(1.4rem,3vw,2.2rem);margin:0}p{margin:.35rem 0;color:var(--muted)}a{color:var(--accent)}.nav{display:flex;gap:14px;flex-wrap:wrap}
+main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(270px,.8fr);gap:14px}.panel{border:1px solid var(--line);background:rgba(20,24,33,.92);border-radius:14px;overflow:hidden;min-width:0}.head{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}h2{font-size:1rem;margin:0}.tag{font-size:.75rem;color:var(--accent);border:1px solid #59683c;padding:3px 8px;border-radius:99px}
+#three{height:min(64vh,610px);min-height:380px;position:relative}#three canvas{display:block;width:100%;height:100%}.legend{display:flex;gap:12px;flex-wrap:wrap;padding:0 16px 14px;color:var(--muted);font-size:.8rem}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.controls{display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap}.controls button,select{font:inherit;color:var(--text);background:#0b0e14;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}.controls button.active{background:var(--accent);color:#10140a;border-color:var(--accent);font-weight:700}.controls select{flex:1;min-width:150px}
+#p5view{height:260px;width:100%}#p5view canvas{display:block;width:100%!important;height:100%!important}.side{padding:16px}.side h2{margin-bottom:8px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.metric{background:#0b0e14;border:1px solid var(--line);border-radius:9px;padding:10px}.metric strong{display:block;font-size:1.2rem}.metric span{color:var(--muted);font-size:.75rem}.axis-list{display:grid;gap:8px;margin-top:12px}.axis{display:grid;grid-template-columns:90px 1fr 28px;gap:8px;align-items:center;font-size:.8rem}.track{height:6px;background:#2b3240;border-radius:10px;overflow:hidden}.fill{height:100%;background:var(--blue);border-radius:10px}.note{padding:12px 16px;border-top:1px solid var(--line);font-size:.82rem}.node-list{display:grid;gap:6px;margin-top:12px}.node-row{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:#0b0e14;border:1px solid var(--line);border-radius:8px;cursor:pointer}.node-row:hover,.node-row.selected{border-color:var(--accent)}.small{font-size:.8rem}.warn{color:#ffd58a}
+@media(max-width:900px){main{grid-template-columns:1fr}#three{height:54vh;min-height:350px}}@media(max-width:480px){.axis{grid-template-columns:82px 1fr 24px}#p5view{height:220px}}
+</style>
+</head>
+<body>
+<header><div><h1>Semantic Space / 意味ベクトル空間</h1><p>高次元の意味を、3Dと2Dの投影として探索する実験</p></div><nav class="nav"><a href="./index.html">← グラフへ戻る</a><a href="https://github.com/bonsai/Japanese-Designers-Graph/issues/6">設計 Issue #6</a></nav></header>
+<main>
+<section class="panel">
+ <div class="head"><h2>3D projection · Three.js</h2><span class="tag">8D → 3D</span></div>
+ <div class="controls"><button id="before" class="active">3人の空間</button><button id="after">4人目を追加</button><select id="candidate" aria-label="4人目の候補"><option value="rei">川久保玲（候補）</option><option value="yohji">山本耀司（候補）</option><option value="jun">ジュンヤ・ワタナベ（候補）</option></select></div>
+ <div id="three" aria-label="回転・拡大できる3D意味空間"></div>
+ <div class="legend"><span><i class="dot" style="background:#d5ff65"></i>三宅一生</span><span><i class="dot" style="background:#75c7ff"></i>森永邦彦</span><span><i class="dot" style="background:#ff9d76"></i>二宮啓</span><span><i class="dot" style="background:#d59cff"></i>追加候補</span><span>ドラッグで回転・ホイールでズーム</span></div>
+ <div class="note">点の位置は8軸の説明用ベクトルを固定投影したものです。実際の埋め込みモデルから算出した座標・類似度ではありません。</div>
+</section>
+<aside class="panel">
+ <div class="head"><h2>選択ノードと特徴ベクトル</h2><span class="tag">Illustrative</span></div>
+ <div class="side"><h2 id="selectedName">三宅一生</h2><p id="selectedDesc">点を選択すると特徴軸を確認できます。</p>
+ <div class="metrics"><div class="metric"><strong id="nodeCount">3</strong><span>表示中の人物</span></div><div class="metric"><strong id="dimCount">8</strong><span>意味軸の次元数</span></div></div>
+ <div id="axes" class="axis-list"></div>
+ <h2 style="margin-top:22px">近傍候補（説明用）</h2><div id="neighbors" class="node-list"></div>
+ </div>
+ <div class="head"><h2>2D projection · p5.js</h2><span class="tag">8D → 2D</span></div><div id="p5view"></div>
+ <div class="note">2D図は同じ特徴ベクトルを別の線形投影で表示します。4人目を加えたときに相対配置がどう変わるか比較できます。</div>
+</aside>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<script>
+const axesNames=['テクノロジー','素材・技法','造形実験','身体性','職人性','概念性','前衛性','日常性'];
+// 手作業で設計した説明用の特徴値（0〜1）。実測embeddingではない。
+const base=[
+{id:'issey',name:'三宅一生',color:0xd5ff65,desc:'素材・技法、身体と衣服の関係、着用可能性を考えるための仮説ベクトル。',v:[.72,.94,.76,.88,.90,.72,.61,.91]},
+{id:'morinaga',name:'森永邦彦',color:0x75c7ff,desc:'テクノロジー、造形実験、概念性を強調した仮説ベクトル。',v:[.96,.77,.96,.62,.58,.82,.87,.53]},
+{id:'ninomiya',name:'二宮啓',color:0xff9d76,desc:'構造的な造形、素材操作、前衛性を強調した仮説ベクトル。',v:[.57,.88,.94,.72,.79,.69,.96,.38]}
+];
+const candidates={
+rei:{id:'rei',name:'川久保玲',color:0xd59cff,desc:'概念性・前衛性・造形実験を強めに置いた仮説ベクトル。人物選択は比較デモ用。',v:[.64,.76,.98,.65,.68,.99,.99,.29]},
+yohji:{id:'yohji',name:'山本耀司',color:0xd59cff,desc:'シルエット、身体性、概念性を強めに置いた仮説ベクトル。比較デモ用。',v:[.42,.77,.82,.91,.74,.90,.88,.44]},
+jun:{id:'jun',name:'ジュンヤ・ワタナベ',color:0xd59cff,desc:'素材構成、技術的実験、造形変化を強めに置いた仮説ベクトル。比較デモ用。',v:[.85,.92,.95,.66,.81,.72,.86,.55]}
+};
+let includeFourth=false,selected='issey',scene,camera,renderer,controls,group,raycaster,mouse,threeReady=false,pointMeshes=[];
+const host=document.getElementById('three');
+function project3(v){return new THREE.Vector3((v[0]-.5)*7+(v[5]-.5)*1.8,(v[2]-.5)*6+(v[3]-.5)*1.2,(v[1]-.5)*6+(v[6]-.5)*1.8)}
+function project2(v){return {x:(v[0]-.5)*1.2+(v[5]-.5)*.7+(v[7]-.5)*.5,y:(v[2]-.5)*1.2-(v[3]-.5)*.6+(v[4]-.5)*.4}}
+function nodes(){return includeFourth?[...base,candidates[document.getElementById('candidate').value]]:[...base]}
+function initThree(){
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x0b0d12);
+ camera=new THREE.PerspectiveCamera(55,host.clientWidth/host.clientHeight,.1,1000);camera.position.set(8,7,10);
+ renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(host.clientWidth,host.clientHeight);host.appendChild(renderer.domElement);
+ scene.add(new THREE.AmbientLight(0xffffff,1.7));const light=new THREE.PointLight(0xffffff,2);light.position.set(4,8,8);scene.add(light);
+ group=new THREE.Group();scene.add(group);
+ // 3D axis guides and grid
+ const grid=new THREE.GridHelper(14,14,0x354052,0x202735);grid.position.y=-3.5;scene.add(grid);
+ const axisMat=new THREE.LineBasicMaterial({color:0x354052,transparent:true,opacity:.65});
+ [[new THREE.Vector3(-5,0,0),new THREE.Vector3(5,0,0)],[new THREE.Vector3(0,-4,0),new THREE.Vector3(0,4,0)],[new THREE.Vector3(0,0,-5),new THREE.Vector3(0,0,5)]].forEach(points=>scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),axisMat)));
+ raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();
+ renderer.domElement.addEventListener('pointerdown',onPointer);
+ threeReady=true;drawThree();animate();
+}
+function drawThree(){
+ if(!threeReady)return;while(group.children.length) {const o=group.children.pop();if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();}
+ pointMeshes=[];const ns=nodes(),pos={};
+ ns.forEach(n=>{pos[n.id]=project3(n.v)});
+ // proximity connections based on distance in the illustrative 8D feature vector
+ for(let i=0;i<ns.length;i++)for(let j=i+1;j<ns.length;j++){const d=dist(ns[i].v,ns[j].v);if(d<1.15){const geo=new THREE.BufferGeometry().setFromPoints([pos[ns[i].id],pos[ns[j].id]]);group.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:0x667387,transparent:true,opacity:.35+(1-d/1.15)*.45})));}}
+ ns.forEach(n=>{const p=pos[n.id],isSel=n.id===selected,geo=new THREE.SphereGeometry(isSel?.25:.18,24,18),mat=new THREE.MeshStandardMaterial({color:n.color,emissive:n.color,emissiveIntensity:isSel?.48:.12,roughness:.35});const mesh=new THREE.Mesh(geo,mat);mesh.position.copy(p);mesh.userData.nodeId=n.id;group.add(mesh);pointMeshes.push(mesh);
+ const sprite=makeLabel(n.name,n.color);sprite.position.set(p.x,p.y+.42,p.z);group.add(sprite);
+ const halo=new THREE.Mesh(new THREE.SphereGeometry(isSel?.34:.25,20,16),new THREE.MeshBasicMaterial({color:n.color,transparent:true,opacity:isSel?.2:.07,wireframe:true}));halo.position.copy(p);group.add(halo);
+ });
+}
+function makeLabel(text,color){const c=document.createElement('canvas'),ctx=c.getContext('2d');c.width=256;c.height=64;ctx.font='bold 27px system-ui';ctx.fillStyle='#edf2fa';ctx.fillText(text,5,40);const tex=new THREE.CanvasTexture(c),mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});const s=new THREE.Sprite(mat);s.scale.set(2.1,.52,1);return s}
+function onPointer(e){const r=renderer.domElement.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObjects(pointMeshes);if(hits.length){selected=hits[0].object.userData.nodeId;updateDetails();drawThree();}}
+function animate(){requestAnimationFrame(animate);if(!threeReady)return;renderer.render(scene,camera)}
+function resizeThree(){if(!threeReady)return;camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight)}
+function dist(a,b){return Math.sqrt(a.reduce((s,x,i)=>s+(x-b[i])**2,0))}
+function updateDetails(){
+ const ns=nodes(),n=ns.find(x=>x.id===selected)||ns[0];if(!n)return;selected=n.id;
+ document.getElementById('selectedName').textContent=n.name;document.getElementById('selectedDesc').textContent=n.desc;
+ document.getElementById('nodeCount').textContent=ns.length;document.getElementById('dimCount').textContent=n.v.length;
+ const box=document.getElementById('axes');box.replaceChildren();n.v.forEach((v,i)=>{const row=document.createElement('div');row.className='axis';row.innerHTML='<span>'+axesNames[i]+'</span><div class="track"><div class="fill" style="width:'+(v*100)+'%"></div></div><span>'+v.toFixed(2)+'</span>';box.append(row)});
+ const neighbors=document.getElementById('neighbors');neighbors.replaceChildren();ns.filter(x=>x.id!==n.id).map(x=>({n:x,d:dist(n.v,x.v)})).sort((a,b)=>a.d-b.d).forEach(x=>{const row=document.createElement('div');row.className='node-row'+(x.n.id===selected?' selected':'');row.innerHTML='<span>'+x.n.name+'</span><span>'+x.d.toFixed(2)+'</span>';row.addEventListener('click',()=>{selected=x.n.id;updateDetails();drawThree();});neighbors.append(row)});
+ if(window.redrawSemantic2d)window.redrawSemantic2d();
+}
+document.getElementById('before').onclick=()=>{includeFourth=false;document.getElementById('before').classList.add('active');document.getElementById('after').classList.remove('active');if(!base.some(n=>n.id===selected))selected='issey';updateDetails();drawThree()};
+document.getElementById('after').onclick=()=>{includeFourth=true;document.getElementById('after').classList.add('active');document.getElementById('before').classList.remove('active');selected=candidates[document.getElementById('candidate').value].id;updateDetails();drawThree()};
+document.getElementById('candidate').onchange=()=>{if(includeFourth){selected=candidates[document.getElementById('candidate').value].id;updateDetails();drawThree()}};
+new p5(p=>{
+ let canvas;
+ p.setup=()=>{canvas=p.createCanvas(Math.max(280,document.getElementById('p5view').clientWidth),260);canvas.parent('p5view');p.textFont('system-ui');window.redrawSemantic2d=()=>p.redraw();p.noLoop()};
+ p.draw=()=>{p.background(11,14,20);const ns=nodes(),w=p.width,h=p.height;p.stroke(46,56,72);p.strokeWeight(1);p.line(24,h/2,w-24,h/2);p.line(w/2,20,w/2,h-20);p.noStroke();p.fill(155,168,187);p.textSize(10);p.text('projection axis 1',8,14);p.text('axis 2',w-48,h-8);
+ const pts=ns.map(n=>({n,...project2(n.v)}));const minX=Math.min(...pts.map(x=>x.x),-.2),maxX=Math.max(...pts.map(x=>x.x),.2),minY=Math.min(...pts.map(x=>x.y),-.2),maxY=Math.max(...pts.map(x=>x.y),.2);const sx=x=>20+(x-minX)/(maxX-minX)*(w-40),sy=y=>h-28-(y-minY)/(maxY-minY)*(h-55);
+ for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){p.stroke(93,109,132,110);p.line(sx(pts[i].x),sy(pts[i].y),sx(pts[j].x),sy(pts[j].y))}
+ pts.forEach(({n,x,y})=>{p.noStroke();p.fill('#'+n.color.toString(16).padStart(6,'0'));p.circle(sx(x),sy(y),n.id===selected?13:9);p.fill(237,242,250);p.textSize(11);p.text(n.name,sx(x)+7,sy(y)-7)});
+ };
+ p.windowResized=()=>{p.resizeCanvas(Math.max(280,document.getElementById('p5view').clientWidth),260);p.redraw()};
+});
+window.addEventListener('resize',resizeThree);
+initThree();updateDetails();
+</script>
+</body>
+</html>
