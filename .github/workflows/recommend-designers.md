@@ -7,7 +7,7 @@ on:
     paths:
       - "data/seeds.json"
   schedule:
-    - weekly on monday
+    - cron: "17 2 * * 1"
   workflow_dispatch:
 permissions:
   contents: read
