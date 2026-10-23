@@ -1,0 +1,51 @@
+name: Compile gh-aw workflow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/recommend-designers.md"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: compile-gh-aw
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install GitHub CLI extension
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh extension install github/gh-aw
+
+      - name: Compile and validate agentic workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh aw compile .github/workflows/recommend-designers.md --validate --strict
+
+      - name: Create pull request for compiled lock file
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ github.token }}
+          branch: automation/compile-recommend-designers
+          delete-branch: true
+          add-paths: .github/workflows/recommend-designers.lock.yml
+          commit-message: "Compile designer recommendation agentic workflow"
+          title: "Compile designer recommendation workflow"
+          body: |
+            Automated output from gh aw compile --validate --strict.
+
+            Please review the generated lock file before merging. The Markdown source remains canonical.
+          draft: true
+          labels: enhancement
