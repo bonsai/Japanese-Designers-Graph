@@ -11,32 +11,25 @@
 header{padding:22px clamp(16px,4vw,44px);border-bottom:1px solid var(--line);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}h1{font-size:clamp(1.4rem,3vw,2.2rem);margin:0}p{margin:.35rem 0;color:var(--muted)}a{color:var(--accent)}.nav{display:flex;gap:14px;flex-wrap:wrap}
 main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}.panel{border:1px solid var(--line);background:rgba(20,24,33,.92);border-radius:14px;overflow:hidden;min-width:0}.head{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}h2{font-size:1rem;margin:0}.tag{font-size:.75rem;color:var(--accent);border:1px solid #59683c;padding:3px 8px;border-radius:99px}
 #three{height:min(64vh,610px);min-height:380px;position:relative}#three canvas{display:block;width:100%;height:100%}.legend{display:flex;gap:12px;flex-wrap:wrap;padding:0 16px 14px;color:var(--muted);font-size:.8rem}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
-.controls{display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap}.controls button,select{font:inherit;color:var(--text);background:#0b0e14;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}.controls button.active{background:var(--accent);color:#10140a;border-color:var(--accent);font-weight:700}.controls select{flex:1;min-width:150px}
+.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px 16px 16px}.slider{display:grid;gap:8px;min-width:0}.slider-head{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.85rem}.slider-head output{color:var(--accent);font-size:.78rem;text-align:right}.slider input{width:100%;accent-color:var(--accent);cursor:pointer}.slider small{color:var(--muted);font-size:.72rem}@media(max-width:680px){.controls{grid-template-columns:repeat(2,minmax(0,1fr))}#three{height:56vh;min-height:320px}}
 #p5view{height:260px;width:100%}#p5view canvas{display:block;width:100%!important;height:100%!important}.side{padding:16px}.side h2{margin-bottom:8px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.metric{background:#0b0e14;border:1px solid var(--line);border-radius:9px;padding:10px}.metric strong{display:block;font-size:1.2rem}.metric span{color:var(--muted);font-size:.75rem}.axis-list{display:grid;gap:8px;margin-top:12px}.axis{display:grid;grid-template-columns:90px 1fr 28px;gap:8px;align-items:center;font-size:.8rem}.track{height:6px;background:#2b3240;border-radius:10px;overflow:hidden}.fill{height:100%;background:var(--blue);border-radius:10px}.note{padding:12px 16px;border-top:1px solid var(--line);font-size:.82rem}.node-list{display:grid;gap:6px;margin-top:12px}.node-row{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:#0b0e14;border:1px solid var(--line);border-radius:8px;cursor:pointer}.node-row:hover,.node-row.selected{border-color:var(--accent)}.small{font-size:.8rem}.warn{color:#ffd58a}
 
 @media(max-width:380px){#three{min-height:270px}.axis{grid-template-columns:82px 1fr 25px}.tag{font-size:.68rem}.head h2{font-size:.9rem}}
 </style>
 </head>
 <body>
-<header><div><h1>Semantic Space / 意味ベクトル空間</h1><p>8つの意味軸から3軸を選び、1〜4人の配置を動的に比較する</p></div><nav class="nav"><a href="./index.html">← グラフへ戻る</a><a href="https://github.com/bonsai/Japanese-Designers-Graph/issues/6">設計 Issue #6</a></nav></header>
+<header><div><h1>Semantic Globe</h1><p>意味空間を4つのスライダーで探索</p></div></header>
 
 <main>
 <section class="panel">
- <div class="head"><h2>3D semantic graph · Three.js</h2><span class="tag">8軸から3軸を選択</span></div>
- <div class="controls">
- <select id="peopleCount" aria-label="表示人数"><option value="1">1人</option><option value="2">2人</option><option value="3" selected>3人</option><option value="4">4人</option></select>
- <select id="candidate" aria-label="追加候補"><option value="rei">候補：川久保玲</option><option value="yohji">候補：山本耀司</option><option value="jun">候補：ジュンヤ・ワタナベ</option></select>
- <select id="target" aria-label="類似度の基準人物"><option value="issey">基準：三宅一生</option><option value="morinaga">基準：森永邦彦</option><option value="ninomiya">基準：二宮啓</option><option value="rei">基準：川久保玲</option><option value="yohji">基準：山本耀司</option><option value="jun">基準：ジュンヤ・ワタナベ</option></select>
- <select id="axisX" aria-label="X軸"><option value="0">X：テクノロジー</option><option value="1">X：素材・技法</option><option value="2">X：造形実験</option><option value="3">X：身体性</option><option value="4">X：職人性</option><option value="5">X：概念性</option><option value="6">X：前衛性</option><option value="7">X：日常性</option></select>
- <select id="axisY" aria-label="Y軸"><option value="2" selected>Y：造形実験</option><option value="0">Y：テクノロジー</option><option value="1">Y：素材・技法</option><option value="3">Y：身体性</option><option value="4">Y：職人性</option><option value="5">Y：概念性</option><option value="6">Y：前衛性</option><option value="7">Y：日常性</option></select>
- <select id="axisZ" aria-label="Z軸"><option value="1" selected>Z：素材・技法</option><option value="0">Z：テクノロジー</option><option value="2">Z：造形実験</option><option value="3">Z：身体性</option><option value="4">Z：職人性</option><option value="5">Z：概念性</option><option value="6">Z：前衛性</option><option value="7">Z：日常性</option></select>
- <select id="axisMode" aria-label="並び替え軸"><option value="cosine">並び替え：cosine 類似度</option><option value="0">並び替え：テクノロジー</option><option value="1">並び替え：素材・技法</option><option value="2">並び替え：造形実験</option><option value="3">並び替え：身体性</option><option value="4">並び替え：職人性</option><option value="5">並び替え：概念性</option><option value="6">並び替え：前衛性</option><option value="7">並び替え：日常性</option></select>
+ <div id="three" aria-label="ドラッグで回転できる3Dセマンティックグローブ"></div>
+ <div class="controls" aria-label="グローブ操作スライダー">
+  <label class="slider"><span class="slider-head"><span>X軸</span><output id="axisXValue">テクノロジー</output></span><input id="axisX" type="range" min="0" max="7" step="1" value="0" aria-label="X軸の意味次元"><small>左右の配置を決める</small></label>
+  <label class="slider"><span class="slider-head"><span>Y軸</span><output id="axisYValue">造形実験</output></span><input id="axisY" type="range" min="0" max="7" step="1" value="2" aria-label="Y軸の意味次元"><small>上下の配置を決める</small></label>
+  <label class="slider"><span class="slider-head"><span>Z軸</span><output id="axisZValue">素材・技法</output></span><input id="axisZ" type="range" min="0" max="7" step="1" value="1" aria-label="Z軸の意味次元"><small>奥行きの配置を決める</small></label>
+  <label class="slider"><span class="slider-head"><span>表示人数</span><output id="peopleCountValue">4人</output></span><input id="peopleCount" type="range" min="1" max="4" step="1" value="4" aria-label="表示する人物の数"><small>1〜4人を表示</small></label>
  </div>
- <div id="three" aria-label="回転・拡大できる3D意味空間"></div>
- <div class="legend"><span><i class="dot" style="background:#d5ff65"></i>三宅一生</span><span><i class="dot" style="background:#75c7ff"></i>森永邦彦</span><span><i class="dot" style="background:#ff9d76"></i>二宮啓</span><span><i class="dot" style="background:#d59cff"></i>追加候補</span><span>選択したX・Y・Z軸で座標を再計算</span></div>
- <div class="note">点の位置は8軸の説明用ベクトルを固定投影したものです。実際の埋め込みモデルから算出した座標・類似度ではありません。</div>
 </section>
-
 </main>
 <script>
 async function loadThree() {
@@ -93,15 +86,9 @@ const host=document.getElementById('three');
 function project3(v){return new THREE.Vector3((v[0]-.5)*7+(v[5]-.5)*1.8,(v[2]-.5)*6+(v[3]-.5)*1.2,(v[1]-.5)*6+(v[6]-.5)*1.8)}
 function project2(v){return {x:(v[0]-.5)*1.2+(v[5]-.5)*.7+(v[7]-.5)*.5,y:(v[2]-.5)*1.2-(v[3]-.5)*.6+(v[4]-.5)*.4}}
 function nodes(){
- const pool=[...base,candidates[document.getElementById('candidate').value]];
- const count=Number(document.getElementById('peopleCount').value||3);
- return sortNodes(pool).slice(0,count);
-}
-function cosine(a,b){const dot=a.reduce((s,x,i)=>s+x*b[i],0),na=Math.sqrt(a.reduce((s,x)=>s+x*x,0)),nb=Math.sqrt(b.reduce((s,x)=>s+x*x,0));return na&&nb?dot/(na*nb):0}
-function sortNodes(ns){
- const mode=document.getElementById('axisMode').value,targetId=document.getElementById('target').value;
- const target=[...base,...Object.values(candidates)].find(n=>n.id===targetId)||base[0];
- return [...ns].sort((a,b)=>mode==='cosine'?cosine(b.v,target.v)-cosine(a.v,target.v):b.v[Number(mode)]-a.v[Number(mode)]);
+ const pool=[...base,candidates.rei];
+ const count=Number(document.getElementById('peopleCount').value||4);
+ return pool.slice(0,count);
 }
 function projectSelectedAxes(v){
  const xi=Number(document.getElementById('axisX').value),yi=Number(document.getElementById('axisY').value),zi=Number(document.getElementById('axisZ').value);
@@ -114,9 +101,10 @@ function initThree(){
  scene.add(new THREE.AmbientLight(0xffffff,1.7));const light=new THREE.PointLight(0xffffff,2);light.position.set(4,8,8);scene.add(light);
  group=new THREE.Group();scene.add(group);
  // 3D axis guides and grid
- const grid=new THREE.GridHelper(14,14,0x354052,0x202735);grid.position.y=-3.5;scene.add(grid);
- const axisMat=new THREE.LineBasicMaterial({color:0x354052,transparent:true,opacity:.65});
- [[new THREE.Vector3(-5,0,0),new THREE.Vector3(5,0,0)],[new THREE.Vector3(0,-4,0),new THREE.Vector3(0,4,0)],[new THREE.Vector3(0,0,-5),new THREE.Vector3(0,0,5)]].forEach(points=>scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),axisMat)));
+ const globe=new THREE.Mesh(new THREE.SphereGeometry(4.9,32,24),new THREE.MeshBasicMaterial({color:0x75c7ff,wireframe:true,transparent:true,opacity:.11}));
+ scene.add(globe);
+ const globeCore=new THREE.Mesh(new THREE.SphereGeometry(4.82,24,18),new THREE.MeshBasicMaterial({color:0x75c7ff,transparent:true,opacity:.025}));
+ scene.add(globeCore);
  raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();
  renderer.domElement.addEventListener('pointerdown',onPointer);
  threeReady=true;drawThree();animate();
@@ -140,11 +128,15 @@ function dist(a,b){return Math.sqrt(a.reduce((s,x,i)=>s+(x-b[i])**2,0))}
 function updateDetails(){
  const ns=nodes(),n=ns.find(x=>x.id===selected)||ns[0];if(!n)return;selected=n.id;
 }
-document.getElementById('candidate').addEventListener('change',()=>{drawThree()});
-document.getElementById('peopleCount').addEventListener('change',()=>{drawThree()});
-
+function syncSliderLabels(){
+ ['axisX','axisY','axisZ'].forEach(id=>{
+  document.getElementById(id+'Value').textContent=axesNames[Number(document.getElementById(id).value)];
+ });
+ document.getElementById('peopleCountValue').textContent=document.getElementById('peopleCount').value+'人';
+}
 window.addEventListener('resize',resizeThree);
-['target','axisMode','axisX','axisY','axisZ','peopleCount','candidate'].forEach(id=>document.getElementById(id).addEventListener('change',()=>drawThree()));
+['axisX','axisY','axisZ','peopleCount'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{syncSliderLabels();drawThree();}));
+syncSliderLabels();
 loadThree().then(()=>initThree()).catch(err=>{
  host.innerHTML='<p style="padding:20px;color:#ffd58a">3Dライブラリを読み込めませんでした。ネットワークまたはCDNへのアクセスを確認して再読み込みしてください。</p>';
  console.error(err);
