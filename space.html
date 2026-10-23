@@ -119,8 +119,18 @@ function drawThree(){
  if(!threeReady)return;while(group.children.length) {const o=group.children[group.children.length-1];group.remove(o);if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();}
  pointMeshes=[];const ns=nodes(),pos={};
  ns.forEach(n=>{pos[n.id]=projectSelectedAxes(n.v);});
- // proximity connections based on distance in the illustrative 8D feature vector
- for(let i=0;i<ns.length;i++)for(let j=i+1;j<ns.length;j++){const d=dist(ns[i].v,ns[j].v);if(d<1.15){const geo=new THREE.BufferGeometry().setFromPoints([pos[ns[i].id],pos[ns[j].id]]);group.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:0x667387,transparent:true,opacity:.35+(1-d/1.15)*.45})));}}
+ // 相関の強さは説明用の特徴ベクトル間距離で仮表示（実測統計ではない）
+ // 強い相関＝近い距離は赤、弱い相関＝少し離れた距離は紫
+ for(let i=0;i<ns.length;i++)for(let j=i+1;j<ns.length;j++){
+  const d=dist(ns[i].v,ns[j].v);
+  if(d<1.15){
+   const strong=d<.65;
+   const geo=new THREE.BufferGeometry().setFromPoints([pos[ns[i].id],pos[ns[j].id]]);
+   const color=strong?0xef4444:0xa855f7;
+   const opacity=strong?.85:.55;
+   group.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color,transparent:true,opacity})));
+  }
+ }
  ns.forEach(n=>{const p=pos[n.id],isSel=n.id===selected,geo=new THREE.SphereGeometry(isSel?.25:.18,24,18),mat=new THREE.MeshStandardMaterial({color:n.color,emissive:n.color,emissiveIntensity:isSel?.48:.12,roughness:.35});const mesh=new THREE.Mesh(geo,mat);mesh.position.copy(p);mesh.userData.nodeId=n.id;group.add(mesh);pointMeshes.push(mesh);
  const sprite=makeLabel(n.name,n.color);sprite.position.set(p.x,p.y+.42,p.z);group.add(sprite);
  const halo=new THREE.Mesh(new THREE.SphereGeometry(isSel?.34:.25,20,16),new THREE.MeshBasicMaterial({color:n.color,transparent:true,opacity:isSel?.2:.07,wireframe:true}));halo.position.copy(p);group.add(halo);
