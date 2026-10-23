@@ -4,12 +4,24 @@
 
 ## GitHub Pages
 
-公開URL: https://bonsai.github.io/Japanese-Designers-Graph/
+- グラフ: https://bonsai.github.io/Japanese-Designers-Graph/
+- 高次元意味空間: https://bonsai.github.io/Japanese-Designers-Graph/space.html
+
+## 高次元意味空間
+
+`space.html` は Three.js と p5.js を使ったインタラクティブな可視化です。
+
+- Three.js: 8次元の説明用特徴ベクトルを3Dに投影。ドラッグで回転、ホイールでズーム。
+- p5.js: 同じベクトルを別の2D投影で表示。
+- 「3人の空間」と「4人目を追加」を切り替え、候補人物を選択して配置変化を比較。
+- ノードを選ぶと、8つの意味軸と説明用の近傍距離を表示。
+
+**注意:** 現在のベクトル値は意味軸を手作業で設定した説明用データです。実際の埋め込みモデルから得たベクトルや測定済み類似度ではありません。可視化の仕組みを確認するためのプロトタイプです。
 
 ## デプロイ
 
 - Workflow: [Deploy Pages](.github/workflows/dep.yml)
-- `main` ブランチの `index.html`、`data/**`、`assets/**` の変更で自動デプロイ
+- `main` ブランチの `index.html`、`space.html`、`data/**`、`assets/**` の変更で自動デプロイ
 - `workflow_dispatch` から手動実行も可能
 - リポジトリの Settings → Pages → Build and deployment で **GitHub Actions** を選択してください（未設定の場合）
 
@@ -19,6 +31,7 @@
 - `data/recommendations.json`: 理由・関連ノード・信頼度・出典を持つ探索レコメンド
 - `.github/workflows/recommend-designers.md`: gh-aw のレコメンド更新ワークフロー原稿。シード更新時・毎週・手動で候補を調査し、変更は draft PR で提案する
 - `index.html`: 静的な検索・グラフ表示UI
+- `space.html`: Three.js / p5.js 意味空間プロトタイプ
 - ブラウザで追加したノードは「JSON出力」でダウンロードできます。現段階ではブラウザからGitHubやSQLiteへ直接保存しません。
 
 ### gh-aw の有効化
@@ -38,6 +51,8 @@ git push
 ## 技術方針
 
 - HTML / JavaScript: GitHub Pagesでの表示
+- Three.js: 3D意味空間の操作・描画
+- p5.js: 2D投影の実験・比較
 - JSON: バージョン管理する正規データ
 - Go + SQLite3: 今後の検証・インポート・検索API用の拡張候補
 - 関係の根拠と確認状態を記録し、未確認情報を確定事実として扱わない
@@ -50,4 +65,4 @@ git push
 python -m http.server 8000
 ```
 
-その後 `http://localhost:8000/` を開きます。
+その後 `http://localhost:8000/` または `http://localhost:8000/space.html` を開きます。
