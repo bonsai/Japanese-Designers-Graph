@@ -78,7 +78,7 @@ function initThree(){
 function drawThree(){
  if(!threeReady)return;while(group.children.length) {const o=group.children[group.children.length-1];group.remove(o);if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();}
  pointMeshes=[];const ns=sortNodes(nodes()),pos={};
- ns.forEach(n=>{pos[n.id]=project3(n.v)});
+ ns.forEach((n,i)=>{const p=project3(n.v);p.x=(i-(ns.length-1)/2)*3.8;pos[n.id]=p;});
  // proximity connections based on distance in the illustrative 8D feature vector
  for(let i=0;i<ns.length;i++)for(let j=i+1;j<ns.length;j++){const d=dist(ns[i].v,ns[j].v);if(d<1.15){const geo=new THREE.BufferGeometry().setFromPoints([pos[ns[i].id],pos[ns[j].id]]);group.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:0x667387,transparent:true,opacity:.35+(1-d/1.15)*.45})));}}
  ns.forEach(n=>{const p=pos[n.id],isSel=n.id===selected,geo=new THREE.SphereGeometry(isSel?.25:.18,24,18),mat=new THREE.MeshStandardMaterial({color:n.color,emissive:n.color,emissiveIntensity:isSel?.48:.12,roughness:.35});const mesh=new THREE.Mesh(geo,mat);mesh.position.copy(p);mesh.userData.nodeId=n.id;group.add(mesh);pointMeshes.push(mesh);
