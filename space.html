@@ -38,9 +38,23 @@ main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:m
 </section>
 
 </main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 <script>
+function loadFirstAvailable(urls, globalName) {
+ return new Promise((resolve,reject)=>{
+  let i=0;
+  const attempt=()=>{
+   if(window[globalName]){resolve(window[globalName]);return;}
+   if(i>=urls.length){reject(new Error(globalName+' library could not be loaded'));return;}
+   const script=document.createElement('script');
+   script.src=urls[i++];script.async=true;
+   script.onload=()=>window[globalName]?resolve(window[globalName]):attempt();
+   script.onerror=attempt;
+   document.head.appendChild(script);
+  };
+  attempt();
+ });
+}
+
 const axesNames=['テクノロジー','素材・技法','造形実験','身体性','職人性','概念性','前衛性','日常性'];
 // 手作業で設計した説明用の特徴値（0〜1）。実測embeddingではない。
 const base=[
@@ -109,8 +123,15 @@ document.getElementById('candidate').addEventListener('change',()=>{drawThree()}
 document.getElementById('peopleCount').addEventListener('change',()=>{drawThree()});
 
 window.addEventListener('resize',resizeThree);
-initThree();
-['target','axisMode','axisX','axisY','axisZ'].forEach(id=>document.getElementById(id).addEventListener('change',()=>drawThree()));
+['target','axisMode','axisX','axisY','axisZ','peopleCount','candidate'].forEach(id=>document.getElementById(id).addEventListener('change',()=>drawThree()));
+loadFirstAvailable([
+ 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js',
+ 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js',
+ 'https://unpkg.com/three@0.160.0/build/three.min.js'
+],'THREE').then(()=>initThree()).catch(err=>{
+ host.innerHTML='<p style="padding:20px;color:#ffd58a">3Dライブラリを読み込めませんでした。ネットワークまたはCDNへのアクセスを確認して再読み込みしてください。</p>';
+ console.error(err);
+});
 </script>
 </body>
 </html>
