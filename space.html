@@ -11,7 +11,7 @@
 header{padding:22px clamp(16px,4vw,44px);border-bottom:1px solid var(--line);display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}h1{font-size:clamp(1.4rem,3vw,2.2rem);margin:0}p{margin:.35rem 0;color:var(--muted)}a{color:var(--accent)}.nav{display:flex;gap:14px;flex-wrap:wrap}
 main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}.panel{border:1px solid var(--line);background:rgba(20,24,33,.92);border-radius:14px;overflow:hidden;min-width:0}.head{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}h2{font-size:1rem;margin:0}.tag{font-size:.75rem;color:var(--accent);border:1px solid #59683c;padding:3px 8px;border-radius:99px}
 #three{height:min(64vh,610px);min-height:380px;position:relative}#three canvas{display:block;width:100%;height:100%}.legend{display:flex;gap:12px;flex-wrap:wrap;padding:0 16px 14px;color:var(--muted);font-size:.8rem}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
-.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px 16px 16px}.slider{display:grid;gap:8px;min-width:0}.slider-head{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.85rem}.slider-head output{color:var(--accent);font-size:.78rem;text-align:right}.slider input{width:100%;accent-color:var(--accent);cursor:pointer}.slider small{color:var(--muted);font-size:.72rem}@media(max-width:680px){.controls{grid-template-columns:repeat(2,minmax(0,1fr))}#three{height:56vh;min-height:320px}}
+.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px 16px 16px}.slider{display:grid;gap:8px;min-width:0}.slider-head{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:.85rem}.slider-head output{font-size:.78rem;text-align:right}.slider input{width:100%;cursor:pointer}.slider.axis-x input{accent-color:#a3e635}.slider.axis-y input{accent-color:#65c466}.slider.axis-z input{accent-color:#34a853}.slider.people input{accent-color:#fb923c}.slider.axis-x .slider-head output{color:#a3e635}.slider.axis-y .slider-head output{color:#65c466}.slider.axis-z .slider-head output{color:#34a853}.slider.people .slider-head output{color:#fb923c}.slider small{color:var(--muted);font-size:.72rem}@media(max-width:680px){.controls{grid-template-columns:repeat(2,minmax(0,1fr))}#three{height:56vh;min-height:320px}}
 #p5view{height:260px;width:100%}#p5view canvas{display:block;width:100%!important;height:100%!important}.side{padding:16px}.side h2{margin-bottom:8px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.metric{background:#0b0e14;border:1px solid var(--line);border-radius:9px;padding:10px}.metric strong{display:block;font-size:1.2rem}.metric span{color:var(--muted);font-size:.75rem}.axis-list{display:grid;gap:8px;margin-top:12px}.axis{display:grid;grid-template-columns:90px 1fr 28px;gap:8px;align-items:center;font-size:.8rem}.track{height:6px;background:#2b3240;border-radius:10px;overflow:hidden}.fill{height:100%;background:var(--blue);border-radius:10px}.note{padding:12px 16px;border-top:1px solid var(--line);font-size:.82rem}.node-list{display:grid;gap:6px;margin-top:12px}.node-row{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:#0b0e14;border:1px solid var(--line);border-radius:8px;cursor:pointer}.node-row:hover,.node-row.selected{border-color:var(--accent)}.small{font-size:.8rem}.warn{color:#ffd58a}
 
 @media(max-width:380px){#three{min-height:270px}.axis{grid-template-columns:82px 1fr 25px}.tag{font-size:.68rem}.head h2{font-size:.9rem}}
@@ -24,10 +24,10 @@ main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:m
 <section class="panel">
  <div id="three" aria-label="ドラッグで回転できる3Dセマンティックグローブ"></div>
  <div class="controls" aria-label="グローブ操作スライダー">
-  <label class="slider"><span class="slider-head"><span>X軸</span><output id="axisXValue">テクノロジー</output></span><input id="axisX" type="range" min="0" max="7" step="1" value="0" aria-label="X軸の意味次元"><small>左右の配置を決める</small></label>
-  <label class="slider"><span class="slider-head"><span>Y軸</span><output id="axisYValue">造形実験</output></span><input id="axisY" type="range" min="0" max="7" step="1" value="2" aria-label="Y軸の意味次元"><small>上下の配置を決める</small></label>
-  <label class="slider"><span class="slider-head"><span>Z軸</span><output id="axisZValue">素材・技法</output></span><input id="axisZ" type="range" min="0" max="7" step="1" value="1" aria-label="Z軸の意味次元"><small>奥行きの配置を決める</small></label>
-  <label class="slider"><span class="slider-head"><span>表示人数</span><output id="peopleCountValue">4人</output></span><input id="peopleCount" type="range" min="1" max="4" step="1" value="4" aria-label="表示する人物の数"><small>1〜4人を表示</small></label>
+  <label class="slider axis-x"><span class="slider-head"><span>X軸</span><output id="axisXValue">テクノロジー</output></span><input id="axisX" type="range" min="0" max="7" step="1" value="0" aria-label="X軸の意味次元"><small>左右の配置を決める</small></label>
+  <label class="slider axis-y"><span class="slider-head"><span>Y軸</span><output id="axisYValue">造形実験</output></span><input id="axisY" type="range" min="0" max="7" step="1" value="2" aria-label="Y軸の意味次元"><small>上下の配置を決める</small></label>
+  <label class="slider axis-z"><span class="slider-head"><span>Z軸</span><output id="axisZValue">素材・技法</output></span><input id="axisZ" type="range" min="0" max="7" step="1" value="1" aria-label="Z軸の意味次元"><small>奥行きの配置を決める</small></label>
+  <label class="slider people"><span class="slider-head"><span>表示人数</span><output id="peopleCountValue">4人</output></span><input id="peopleCount" type="range" min="1" max="4" step="1" value="4" aria-label="表示する人物の数"><small>1〜4人を表示</small></label>
  </div>
 </section>
 </main>
@@ -72,14 +72,14 @@ async function loadThree() {
 const axesNames=['テクノロジー','素材・技法','造形実験','身体性','職人性','概念性','前衛性','日常性'];
 // 手作業で設計した説明用の特徴値（0〜1）。実測embeddingではない。
 const base=[
-{id:'issey',name:'三宅一生',color:0xd5ff65,desc:'素材・技法、身体と衣服の関係、着用可能性を考えるための仮説ベクトル。',v:[.72,.94,.76,.88,.90,.72,.61,.91]},
-{id:'morinaga',name:'森永邦彦',color:0x75c7ff,desc:'テクノロジー、造形実験、概念性を強調した仮説ベクトル。',v:[.96,.77,.96,.62,.58,.82,.87,.53]},
-{id:'ninomiya',name:'二宮啓',color:0xff9d76,desc:'構造的な造形、素材操作、前衛性を強調した仮説ベクトル。',v:[.57,.88,.94,.72,.79,.69,.96,.38]}
+{id:'issey',name:'三宅一生',color:0xfb923c,desc:'素材・技法、身体と衣服の関係、着用可能性を考えるための仮説ベクトル。',v:[.72,.94,.76,.88,.90,.72,.61,.91]},
+{id:'morinaga',name:'森永邦彦',color:0xf97316,desc:'テクノロジー、造形実験、概念性を強調した仮説ベクトル。',v:[.96,.77,.96,.62,.58,.82,.87,.53]},
+{id:'ninomiya',name:'二宮啓',color:0xea580c,desc:'構造的な造形、素材操作、前衛性を強調した仮説ベクトル。',v:[.57,.88,.94,.72,.79,.69,.96,.38]}
 ];
 const candidates={
-rei:{id:'rei',name:'川久保玲',color:0xd59cff,desc:'概念性・前衛性・造形実験を強めに置いた仮説ベクトル。人物選択は比較デモ用。',v:[.64,.76,.98,.65,.68,.99,.99,.29]},
-yohji:{id:'yohji',name:'山本耀司',color:0xd59cff,desc:'シルエット、身体性、概念性を強めに置いた仮説ベクトル。比較デモ用。',v:[.42,.77,.82,.91,.74,.90,.88,.44]},
-jun:{id:'jun',name:'ジュンヤ・ワタナベ',color:0xd59cff,desc:'素材構成、技術的実験、造形変化を強めに置いた仮説ベクトル。比較デモ用。',v:[.85,.92,.95,.66,.81,.72,.86,.55]}
+rei:{id:'rei',name:'川久保玲',color:0xfb923c,desc:'概念性・前衛性・造形実験を強めに置いた仮説ベクトル。人物選択は比較デモ用。',v:[.64,.76,.98,.65,.68,.99,.99,.29]},
+yohji:{id:'yohji',name:'山本耀司',color:0xf97316,desc:'シルエット、身体性、概念性を強めに置いた仮説ベクトル。比較デモ用。',v:[.42,.77,.82,.91,.74,.90,.88,.44]},
+jun:{id:'jun',name:'ジュンヤ・ワタナベ',color:0xea580c,desc:'素材構成、技術的実験、造形変化を強めに置いた仮説ベクトル。比較デモ用。',v:[.85,.92,.95,.66,.81,.72,.86,.55]}
 };
 let selected='issey',scene,camera,renderer,group,globeGroup,raycaster,mouse,threeReady=false,pointMeshes=[],dragState=null;
 const host=document.getElementById('three');
