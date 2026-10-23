@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "generated_at": "2026-10-23",
+  "recommendations": [
+    {
+      "id": "recommendation:explore-technology-and-materials",
+      "title": "テクノロジーと素材表現から探索する",
+      "summary": "ブランド同士の直接的な関係ではなく、デザイン手法を比較するための探索候補です。",
+      "node_ids": [
+        "brand:anrealage",
+        "brand:issey-miyake"
+      ],
+      "reason": "素材・構造・身体と衣服の関係という観点から、公式資料を比較して共通点や違いを調べる入口にする。これはテーマ上の提案であり、コラボレーションや直接的な関係を示すものではありません。",
+      "confidence": "low",
+      "status": "candidate",
+      "sources": []
+    }
+  ]
+}
