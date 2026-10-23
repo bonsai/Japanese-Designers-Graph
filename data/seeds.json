@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "person:kei-ninomiya",
+      "type": "person",
+      "name": "二宮啓",
+      "aliases": [
+        "Kei Ninomiya"
+      ],
+      "description": "ファッションデザイナー。noir kei ninomiya と結びつく。",
+      "status": "seed"
+    },
+    {
+      "id": "brand:noir-kei-ninomiya",
+      "type": "brand",
+      "name": "noir kei ninomiya",
+      "aliases": [],
+      "description": "二宮啓によるファッションブランド。",
+      "status": "seed"
+    },
+    {
+      "id": "person:kunihiko-morinaga",
+      "type": "person",
+      "name": "森永邦彦",
+      "aliases": [
+        "Kunihiko Morinaga"
+      ],
+      "description": "ファッションデザイナー。ANREALAGE の創設者・デザイナー。",
+      "status": "seed"
+    },
+    {
+      "id": "brand:anrealage",
+      "type": "brand",
+      "name": "ANREALAGE",
+      "aliases": [],
+      "description": "テクノロジーや素材表現を探究する日本のファッションブランド。",
+      "status": "seed"
+    },
+    {
+      "id": "person:issey-miyake",
+      "type": "person",
+      "name": "三宅一生",
+      "aliases": [
+        "Issey Miyake"
+      ],
+      "description": "日本のファッションデザイナー。ISSEY MIYAKE の創設者。",
+      "status": "seed"
+    },
+    {
+      "id": "brand:issey-miyake",
+      "type": "brand",
+      "name": "ISSEY MIYAKE",
+      "aliases": [],
+      "description": "三宅一生のデザイン哲学を継承するファッションブランド。",
+      "status": "seed"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:kei-noir",
+      "source": "person:kei-ninomiya",
+      "predicate": "designer_of",
+      "target": "brand:noir-kei-ninomiya",
+      "status": "seed",
+      "sources": []
+    },
+    {
+      "id": "edge:morinaga-anrealage",
+      "source": "person:kunihiko-morinaga",
+      "predicate": "designer_of",
+      "target": "brand:anrealage",
+      "status": "seed",
+      "sources": []
+    },
+    {
+      "id": "edge:issey-brand",
+      "source": "person:issey-miyake",
+      "predicate": "founder_of",
+      "target": "brand:issey-miyake",
+      "status": "seed",
+      "sources": []
+    }
+  ],
+  "sources": []
+}
