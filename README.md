@@ -16,8 +16,24 @@
 ## データ
 
 - `data/seeds.json`: グラフの初期ノード、関係、出典
+- `data/recommendations.json`: 理由・関連ノード・信頼度・出典を持つ探索レコメンド
+- `.github/workflows/recommend-designers.md`: gh-aw のレコメンド更新ワークフロー原稿。シード更新時・毎週・手動で候補を調査し、変更は draft PR で提案する
 - `index.html`: 静的な検索・グラフ表示UI
 - ブラウザで追加したノードは「JSON出力」でダウンロードできます。現段階ではブラウザからGitHubやSQLiteへ直接保存しません。
+
+### gh-aw の有効化
+
+Agentic Workflow の原稿を GitHub Actions として有効化するには、リポジトリのローカル checkout で GitHub CLI と `gh-aw` 拡張を利用し、コンパイル済み lock ファイルを原稿と一緒にコミットしてください。
+
+```sh
+gh extension install github/gh-aw
+gh aw compile .github/workflows/recommend-designers.md
+git add .github/workflows/recommend-designers.md .github/workflows/recommend-designers.lock.yml
+git commit -m "Compile designer recommendation agentic workflow"
+git push
+```
+
+レコメンドは直接 main に書き込まず、レビュー可能な draft PR として提案します。GitHub Actions の実行前に生成された lock ファイルと workflow の権限・出力を確認してください。
 
 ## 技術方針
 
