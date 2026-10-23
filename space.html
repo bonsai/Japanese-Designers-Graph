@@ -81,7 +81,7 @@ rei:{id:'rei',name:'川久保玲',color:0xd59cff,desc:'概念性・前衛性・�
 yohji:{id:'yohji',name:'山本耀司',color:0xd59cff,desc:'シルエット、身体性、概念性を強めに置いた仮説ベクトル。比較デモ用。',v:[.42,.77,.82,.91,.74,.90,.88,.44]},
 jun:{id:'jun',name:'ジュンヤ・ワタナベ',color:0xd59cff,desc:'素材構成、技術的実験、造形変化を強めに置いた仮説ベクトル。比較デモ用。',v:[.85,.92,.95,.66,.81,.72,.86,.55]}
 };
-let includeFourth=false,selected='issey',scene,camera,renderer,controls,group,raycaster,mouse,threeReady=false,pointMeshes=[];
+let selected='issey',scene,camera,renderer,group,globeGroup,raycaster,mouse,threeReady=false,pointMeshes=[],dragState=null;
 const host=document.getElementById('three');
 function project3(v){return new THREE.Vector3((v[0]-.5)*7+(v[5]-.5)*1.8,(v[2]-.5)*6+(v[3]-.5)*1.2,(v[1]-.5)*6+(v[6]-.5)*1.8)}
 function project2(v){return {x:(v[0]-.5)*1.2+(v[5]-.5)*.7+(v[7]-.5)*.5,y:(v[2]-.5)*1.2-(v[3]-.5)*.6+(v[4]-.5)*.4}}
@@ -101,12 +101,18 @@ function initThree(){
  scene.add(new THREE.AmbientLight(0xffffff,1.7));const light=new THREE.PointLight(0xffffff,2);light.position.set(4,8,8);scene.add(light);
  group=new THREE.Group();scene.add(group);
  // 3D axis guides and grid
+ globeGroup=new THREE.Group();scene.add(globeGroup);
  const globe=new THREE.Mesh(new THREE.SphereGeometry(4.9,32,24),new THREE.MeshBasicMaterial({color:0x75c7ff,wireframe:true,transparent:true,opacity:.11}));
- scene.add(globe);
+ globeGroup.add(globe);
  const globeCore=new THREE.Mesh(new THREE.SphereGeometry(4.82,24,18),new THREE.MeshBasicMaterial({color:0x75c7ff,transparent:true,opacity:.025}));
- scene.add(globeCore);
+ globeGroup.add(globeCore);
  raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();
- renderer.domElement.addEventListener('pointerdown',onPointer);
+ renderer.domElement.style.cursor='grab';
+ renderer.domElement.style.touchAction='none';
+ renderer.domElement.addEventListener('pointerdown',startDrag);
+ renderer.domElement.addEventListener('pointermove',moveDrag);
+ renderer.domElement.addEventListener('pointerup',endDrag);
+ renderer.domElement.addEventListener('pointercancel',endDrag);
  threeReady=true;drawThree();animate();
 }
 function drawThree(){
@@ -121,7 +127,34 @@ function drawThree(){
  });
 }
 function makeLabel(text,color){const c=document.createElement('canvas'),ctx=c.getContext('2d');c.width=256;c.height=64;ctx.font='bold 27px system-ui';ctx.fillStyle='#edf2fa';ctx.fillText(text,5,40);const tex=new THREE.CanvasTexture(c),mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});const s=new THREE.Sprite(mat);s.scale.set(2.1,.52,1);return s}
-function onPointer(e){const r=renderer.domElement.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObjects(pointMeshes);if(hits.length){selected=hits[0].object.userData.nodeId;updateDetails();drawThree();}}
+function startDrag(e){
+ dragState={x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false};
+ renderer.domElement.setPointerCapture(e.pointerId);
+ renderer.domElement.style.cursor='grabbing';
+}
+function moveDrag(e){
+ if(!dragState)return;
+ const dx=e.clientX-dragState.x,dy=e.clientY-dragState.y;
+ if(Math.abs(e.clientX-dragState.startX)+Math.abs(e.clientY-dragState.startY)>4)dragState.moved=true;
+ if(dragState.moved){
+  const scale=10/Math.max(240,host.clientHeight);
+  group.position.x+=dx*scale;group.position.y-=dy*scale;
+  globeGroup.position.x+=dx*scale;globeGroup.position.y-=dy*scale;
+ }
+ dragState.x=e.clientX;dragState.y=e.clientY;
+}
+function endDrag(e){
+ if(!dragState)return;
+ const wasMoved=dragState.moved;dragState=null;
+ renderer.domElement.style.cursor='grab';
+ if(!wasMoved){
+  const r=renderer.domElement.getBoundingClientRect();
+  mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1;
+  raycaster.setFromCamera(mouse,camera);
+  const hits=raycaster.intersectObjects(pointMeshes);
+  if(hits.length){selected=hits[0].object.userData.nodeId;updateDetails();drawThree();}
+ }
+}
 function animate(){requestAnimationFrame(animate);if(!threeReady)return;renderer.render(scene,camera)}
 function resizeThree(){if(!threeReady)return;camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();renderer.setSize(host.clientWidth,host.clientHeight)}
 function dist(a,b){return Math.sqrt(a.reduce((s,x,i)=>s+(x-b[i])**2,0))}
