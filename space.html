@@ -72,7 +72,7 @@ function initThree(){
  threeReady=true;drawThree();animate();
 }
 function drawThree(){
- if(!threeReady)return;while(group.children.length) {const o=group.children.pop();if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();}
+ if(!threeReady)return;while(group.children.length) {const o=group.children[group.children.length-1];group.remove(o);if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();}
  pointMeshes=[];const ns=nodes(),pos={};
  ns.forEach(n=>{pos[n.id]=project3(n.v)});
  // proximity connections based on distance in the illustrative 8D feature vector
