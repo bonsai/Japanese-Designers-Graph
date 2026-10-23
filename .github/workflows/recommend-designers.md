@@ -25,6 +25,8 @@ safe-outputs:
 
 # Designer recommendation refresh
 
+When this source changes on main, the compile-aw workflow validates it and opens a draft PR containing the generated lock file.
+
 Read `data/seeds.json`, `data/recommendations.json`, and the project README before making recommendations.
 
 Update only `data/recommendations.json`. Keep it valid JSON with this shape:
