@@ -13,7 +13,32 @@ main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:m
 #three{height:min(64vh,610px);min-height:380px;position:relative}#three canvas{display:block;width:100%;height:100%}.legend{display:flex;gap:12px;flex-wrap:wrap;padding:0 16px 14px;color:var(--muted);font-size:.8rem}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
 .controls{display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap}.controls button,select{font:inherit;color:var(--text);background:#0b0e14;border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}.controls button.active{background:var(--accent);color:#10140a;border-color:var(--accent);font-weight:700}.controls select{flex:1;min-width:150px}
 #p5view{height:260px;width:100%}#p5view canvas{display:block;width:100%!important;height:100%!important}.side{padding:16px}.side h2{margin-bottom:8px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.metric{background:#0b0e14;border:1px solid var(--line);border-radius:9px;padding:10px}.metric strong{display:block;font-size:1.2rem}.metric span{color:var(--muted);font-size:.75rem}.axis-list{display:grid;gap:8px;margin-top:12px}.axis{display:grid;grid-template-columns:90px 1fr 28px;gap:8px;align-items:center;font-size:.8rem}.track{height:6px;background:#2b3240;border-radius:10px;overflow:hidden}.fill{height:100%;background:var(--blue);border-radius:10px}.note{padding:12px 16px;border-top:1px solid var(--line);font-size:.82rem}.node-list{display:grid;gap:6px;margin-top:12px}.node-row{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;background:#0b0e14;border:1px solid var(--line);border-radius:8px;cursor:pointer}.node-row:hover,.node-row.selected{border-color:var(--accent)}.small{font-size:.8rem}.warn{color:#ffd58a}
-@media(max-width:900px){main{grid-template-columns:1fr}#three{height:54vh;min-height:350px}}@media(max-width:480px){.axis{grid-template-columns:82px 1fr 24px}#p5view{height:220px}}
+#mobileNav{display:none}
+@media(max-width:700px){
+ body{font-size:14px;padding-bottom:76px;background:var(--bg)}
+ header{padding:14px 16px;display:block}header h1{font-size:1.25rem}header p{font-size:.8rem}
+ header .nav{margin-top:8px;font-size:.8rem;gap:16px}
+ main{display:block;padding:10px 10px 20px}
+ main>.panel,main>aside{margin-bottom:10px;border-radius:13px}
+ #three{height:54vh;height:54dvh;min-height:290px;max-height:490px}
+ .head{padding:11px 13px}.controls{padding:10px;gap:6px}
+ .controls button{flex:1;padding:10px 8px;min-height:44px;font-size:.85rem}
+ .controls select{flex-basis:100%;min-height:44px}
+ .legend{padding:0 12px 12px;gap:8px;font-size:.72rem}.note{padding:10px 12px;font-size:.75rem}
+ .side{padding:13px}#p5view{height:230px}
+ #mobileNav{position:fixed;z-index:20;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(10,12,17,.96);border-top:1px solid var(--line);backdrop-filter:blur(16px)}
+ #mobileNav button{border:1px solid transparent;border-radius:10px;background:transparent;color:var(--muted);padding:8px 4px;min-height:48px;font-size:.8rem}
+ #mobileNav button.active{background:#252d20;color:var(--accent);border-color:#49563a}
+ body[data-mobile-view="space"] main>aside{display:none}
+ body[data-mobile-view="compare"] main>section{display:none}
+ body[data-mobile-view="compare"] aside .side,body[data-mobile-view="compare"] aside>.head:first-child{display:none}
+ body[data-mobile-view="details"] main>section{display:none}
+ body[data-mobile-view="details"] aside>.head:nth-of-type(2),body[data-mobile-view="details"] #p5view,body[data-mobile-view="details"] aside>.note:last-child{display:none}
+ .metrics{gap:7px}.metric{padding:9px}.axis{grid-template-columns:92px 1fr 28px;gap:7px}
+ .node-row{min-height:42px;align-items:center}
+}
+@media(min-width:701px){#mobileNav{display:none!important}}
+@media(max-width:380px){#three{min-height:270px}.axis{grid-template-columns:82px 1fr 25px}.tag{font-size:.68rem}.head h2{font-size:.9rem}}
 </style>
 </head>
 <body>
