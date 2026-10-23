@@ -2,6 +2,10 @@
 name: Recommend Japanese Designers
 description: Research explainable designer and brand recommendations from the graph and propose reviewed JSON updates.
 on:
+  push:
+    branches: [main]
+    paths:
+      - "data/seeds.json"
   schedule:
     - cron: "17 2 * * 1"
   workflow_dispatch:
