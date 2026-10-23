@@ -94,6 +94,37 @@ function projectSelectedAxes(v){
  const xi=Number(document.getElementById('axisX').value),yi=Number(document.getElementById('axisY').value),zi=Number(document.getElementById('axisZ').value);
  return new THREE.Vector3((v[xi]-.5)*9,(v[yi]-.5)*7,(v[zi]-.5)*9);
 }
+function drawCurrentAxes(){
+ // 現在選択されているX/Y/Z軸を、色付きの太い軸と4倍サイズのラベルで常時表示
+ const axisDefs=[
+  {name:'X軸: '+axesNames[Number(document.getElementById('axisX').value)],color:0xa3e635,dir:new THREE.Vector3(1,0,0)},
+  {name:'Y軸: '+axesNames[Number(document.getElementById('axisY').value)],color:0x65c466,dir:new THREE.Vector3(0,1,0)},
+  {name:'Z軸: '+axesNames[Number(document.getElementById('axisZ').value)],color:0x34a853,dir:new THREE.Vector3(0,0,1)}
+ ];
+ const length=6.2;
+ axisDefs.forEach(a=>{
+  const end=a.dir.clone().multiplyScalar(length);
+  const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a.dir.clone().multiplyScalar(-length),end]),new THREE.LineBasicMaterial({color:a.color,transparent:true,opacity:.95}));
+  group.add(line);
+  const arrow=new THREE.ArrowHelper(a.dir,new THREE.Vector3(0,0,0),length,a.color,.65,.38);
+  group.add(arrow);
+  const sprite=makeAxisLabel(a.name,a.color);
+  sprite.position.copy(end.clone().multiplyScalar(1.14));
+  group.add(sprite);
+ });
+}
+function makeAxisLabel(text,color){
+ const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+ canvas.width=1024;canvas.height=256;
+ ctx.font='bold 108px system-ui, sans-serif';
+ ctx.lineWidth=12;ctx.strokeStyle='#0b0d12';ctx.strokeText(text,24,160);
+ ctx.fillStyle='#'+color.toString(16).padStart(6,'0');ctx.fillText(text,24,160);
+ const texture=new THREE.CanvasTexture(canvas);
+ const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,transparent:true,depthTest:false}));
+ // Existing person labels are ~27px; axis labels use ~108px (4x).
+ sprite.scale.set(8.4,2.1,1);
+ return sprite;
+}
 function initThree(){
  scene=new THREE.Scene();scene.background=new THREE.Color(0x0b0d12);
  camera=new THREE.PerspectiveCamera(55,host.clientWidth/host.clientHeight,.1,1000);camera.position.set(8,7,10);
@@ -117,7 +148,7 @@ function initThree(){
 }
 function drawThree(){
  if(!threeReady)return;while(group.children.length) {const o=group.children[group.children.length-1];group.remove(o);if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();}
- pointMeshes=[];const ns=nodes(),pos={};
+ pointMeshes=[];drawCurrentAxes();const ns=nodes(),pos={};
  ns.forEach(n=>{pos[n.id]=projectSelectedAxes(n.v);});
  // 相関の強さは説明用の特徴ベクトル間距離で仮表示（実測統計ではない）
  // 強い相関＝近い距離は赤、弱い相関＝少し離れた距離は紫
