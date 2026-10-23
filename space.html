@@ -18,19 +18,22 @@ main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:m
 </style>
 </head>
 <body>
-<header><div><h1>Semantic Space / 意味ベクトル空間</h1><p>高次元の意味を、3Dと2Dの投影として探索する実験</p></div><nav class="nav"><a href="./index.html">← グラフへ戻る</a><a href="https://github.com/bonsai/Japanese-Designers-Graph/issues/6">設計 Issue #6</a></nav></header>
+<header><div><h1>Semantic Space / 意味ベクトル空間</h1><p>8つの意味軸から3軸を選び、1〜4人の配置を動的に比較する</p></div><nav class="nav"><a href="./index.html">← グラフへ戻る</a><a href="https://github.com/bonsai/Japanese-Designers-Graph/issues/6">設計 Issue #6</a></nav></header>
 
 <main>
 <section class="panel">
- <div class="head"><h2>3D projection · Three.js</h2><span class="tag">8D → 3D</span></div>
+ <div class="head"><h2>3D semantic graph · Three.js</h2><span class="tag">8軸から3軸を選択</span></div>
  <div class="controls">
- <button id="before" class="active">3人の空間</button><button id="after">4人目を追加</button>
- <select id="candidate" aria-label="4人目の候補"><option value="rei">川久保玲（候補）</option><option value="yohji">山本耀司（候補）</option><option value="jun">ジュンヤ・ワタナベ（候補）</option></select>
+ <select id="peopleCount" aria-label="表示人数"><option value="1">1人</option><option value="2">2人</option><option value="3" selected>3人</option><option value="4">4人</option></select>
+ <select id="candidate" aria-label="追加候補"><option value="rei">候補：川久保玲</option><option value="yohji">候補：山本耀司</option><option value="jun">候補：ジュンヤ・ワタナベ</option></select>
  <select id="target" aria-label="類似度の基準人物"><option value="issey">基準：三宅一生</option><option value="morinaga">基準：森永邦彦</option><option value="ninomiya">基準：二宮啓</option><option value="rei">基準：川久保玲</option><option value="yohji">基準：山本耀司</option><option value="jun">基準：ジュンヤ・ワタナベ</option></select>
- <select id="axisMode" aria-label="並び替え軸"><option value="cosine">8軸全体の cosine 類似度</option><option value="0">テクノロジー軸</option><option value="1">素材・技法軸</option><option value="2">造形実験軸</option><option value="3">身体性軸</option><option value="4">職人性軸</option><option value="5">概念性軸</option><option value="6">前衛性軸</option><option value="7">日常性軸</select>
+ <select id="axisX" aria-label="X軸"><option value="0">X：テクノロジー</option><option value="1">X：素材・技法</option><option value="2">X：造形実験</option><option value="3">X：身体性</option><option value="4">X：職人性</option><option value="5">X：概念性</option><option value="6">X：前衛性</option><option value="7">X：日常性</option></select>
+ <select id="axisY" aria-label="Y軸"><option value="2" selected>Y：造形実験</option><option value="0">Y：テクノロジー</option><option value="1">Y：素材・技法</option><option value="3">Y：身体性</option><option value="4">Y：職人性</option><option value="5">Y：概念性</option><option value="6">Y：前衛性</option><option value="7">Y：日常性</option></select>
+ <select id="axisZ" aria-label="Z軸"><option value="1" selected>Z：素材・技法</option><option value="0">Z：テクノロジー</option><option value="2">Z：造形実験</option><option value="3">Z：身体性</option><option value="4">Z：職人性</option><option value="5">Z：概念性</option><option value="6">Z：前衛性</option><option value="7">Z：日常性</option></select>
+ <select id="axisMode" aria-label="並び替え軸"><option value="cosine">並び替え：cosine 類似度</option><option value="0">並び替え：テクノロジー</option><option value="1">並び替え：素材・技法</option><option value="2">並び替え：造形実験</option><option value="3">並び替え：身体性</option><option value="4">並び替え：職人性</option><option value="5">並び替え：概念性</option><option value="6">並び替え：前衛性</option><option value="7">並び替え：日常性</option></select>
  </div>
  <div id="three" aria-label="回転・拡大できる3D意味空間"></div>
- <div class="legend"><span><i class="dot" style="background:#d5ff65"></i>三宅一生</span><span><i class="dot" style="background:#75c7ff"></i>森永邦彦</span><span><i class="dot" style="background:#ff9d76"></i>二宮啓</span><span><i class="dot" style="background:#d59cff"></i>追加候補</span><span>ドラッグで回転・ホイールでズーム</span></div>
+ <div class="legend"><span><i class="dot" style="background:#d5ff65"></i>三宅一生</span><span><i class="dot" style="background:#75c7ff"></i>森永邦彦</span><span><i class="dot" style="background:#ff9d76"></i>二宮啓</span><span><i class="dot" style="background:#d59cff"></i>追加候補</span><span>選択したX・Y・Z軸で座標を再計算</span></div>
  <div class="note">点の位置は8軸の説明用ベクトルを固定投影したものです。実際の埋め込みモデルから算出した座標・類似度ではありません。</div>
 </section>
 
@@ -54,12 +57,20 @@ let includeFourth=false,selected='issey',scene,camera,renderer,controls,group,ra
 const host=document.getElementById('three');
 function project3(v){return new THREE.Vector3((v[0]-.5)*7+(v[5]-.5)*1.8,(v[2]-.5)*6+(v[3]-.5)*1.2,(v[1]-.5)*6+(v[6]-.5)*1.8)}
 function project2(v){return {x:(v[0]-.5)*1.2+(v[5]-.5)*.7+(v[7]-.5)*.5,y:(v[2]-.5)*1.2-(v[3]-.5)*.6+(v[4]-.5)*.4}}
-function nodes(){return includeFourth?[...base,candidates[document.getElementById('candidate').value]]:[...base]}
+function nodes(){
+ const pool=[...base,candidates[document.getElementById('candidate').value]];
+ const count=Number(document.getElementById('peopleCount').value||3);
+ return sortNodes(pool).slice(0,count);
+}
 function cosine(a,b){const dot=a.reduce((s,x,i)=>s+x*b[i],0),na=Math.sqrt(a.reduce((s,x)=>s+x*x,0)),nb=Math.sqrt(b.reduce((s,x)=>s+x*x,0));return na&&nb?dot/(na*nb):0}
 function sortNodes(ns){
  const mode=document.getElementById('axisMode').value,targetId=document.getElementById('target').value;
  const target=[...base,...Object.values(candidates)].find(n=>n.id===targetId)||base[0];
  return [...ns].sort((a,b)=>mode==='cosine'?cosine(b.v,target.v)-cosine(a.v,target.v):b.v[Number(mode)]-a.v[Number(mode)]);
+}
+function projectSelectedAxes(v){
+ const xi=Number(document.getElementById('axisX').value),yi=Number(document.getElementById('axisY').value),zi=Number(document.getElementById('axisZ').value);
+ return new THREE.Vector3((v[xi]-.5)*9,(v[yi]-.5)*7,(v[zi]-.5)*9);
 }
 function initThree(){
  scene=new THREE.Scene();scene.background=new THREE.Color(0x0b0d12);
@@ -77,8 +88,8 @@ function initThree(){
 }
 function drawThree(){
  if(!threeReady)return;while(group.children.length) {const o=group.children[group.children.length-1];group.remove(o);if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();}
- pointMeshes=[];const ns=sortNodes(nodes()),pos={};
- ns.forEach((n,i)=>{const p=project3(n.v);p.x=(i-(ns.length-1)/2)*3.8;pos[n.id]=p;});
+ pointMeshes=[];const ns=nodes(),pos={};
+ ns.forEach(n=>{pos[n.id]=projectSelectedAxes(n.v);});
  // proximity connections based on distance in the illustrative 8D feature vector
  for(let i=0;i<ns.length;i++)for(let j=i+1;j<ns.length;j++){const d=dist(ns[i].v,ns[j].v);if(d<1.15){const geo=new THREE.BufferGeometry().setFromPoints([pos[ns[i].id],pos[ns[j].id]]);group.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:0x667387,transparent:true,opacity:.35+(1-d/1.15)*.45})));}}
  ns.forEach(n=>{const p=pos[n.id],isSel=n.id===selected,geo=new THREE.SphereGeometry(isSel?.25:.18,24,18),mat=new THREE.MeshStandardMaterial({color:n.color,emissive:n.color,emissiveIntensity:isSel?.48:.12,roughness:.35});const mesh=new THREE.Mesh(geo,mat);mesh.position.copy(p);mesh.userData.nodeId=n.id;group.add(mesh);pointMeshes.push(mesh);
@@ -94,14 +105,12 @@ function dist(a,b){return Math.sqrt(a.reduce((s,x,i)=>s+(x-b[i])**2,0))}
 function updateDetails(){
  const ns=nodes(),n=ns.find(x=>x.id===selected)||ns[0];if(!n)return;selected=n.id;
 }
-document.getElementById('before').onclick=()=>{includeFourth=false;document.getElementById('before').classList.add('active');document.getElementById('after').classList.remove('active');if(!base.some(n=>n.id===selected))selected='issey';updateDetails();drawThree()};
-document.getElementById('after').onclick=()=>{includeFourth=true;document.getElementById('after').classList.add('active');document.getElementById('before').classList.remove('active');selected=candidates[document.getElementById('candidate').value].id;updateDetails();drawThree()};
-document.getElementById('candidate').onchange=()=>{if(includeFourth){selected=candidates[document.getElementById('candidate').value].id;updateDetails();drawThree()}};
+document.getElementById('candidate').addEventListener('change',()=>{drawThree()});
+document.getElementById('peopleCount').addEventListener('change',()=>{drawThree()});
 
 window.addEventListener('resize',resizeThree);
 initThree();
-document.getElementById('target').addEventListener('change',()=>{drawThree()});
-document.getElementById('axisMode').addEventListener('change',()=>{drawThree()});
+['target','axisMode','axisX','axisY','axisZ'].forEach(id=>document.getElementById(id).addEventListener('change',()=>drawThree()));
 </script>
 </body>
 </html>
