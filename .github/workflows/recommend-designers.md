@@ -7,10 +7,11 @@ on:
     paths:
       - "data/seeds.json"
   schedule:
-    - cron: "17 2 * * 1"
+    - weekly on monday
   workflow_dispatch:
 permissions:
   contents: read
+  issues: read
   pull-requests: read
 tools:
   github:
