@@ -43,6 +43,7 @@ main{padding:16px clamp(10px,2vw,26px) 36px;display:grid;grid-template-columns:m
 </head>
 <body>
 <header><div><h1>Semantic Space / 意味ベクトル空間</h1><p>高次元の意味を、3Dと2Dの投影として探索する実験</p></div><nav class="nav"><a href="./index.html">← グラフへ戻る</a><a href="https://github.com/bonsai/Japanese-Designers-Graph/issues/6">設計 Issue #6</a></nav></header>
+<nav id="mobileNav" aria-label="表示切り替え"><button class="active" data-view="space">◉ 空間</button><button data-view="compare">⌗ 比較</button><button data-view="details">☰ 特徴</button></nav>
 <main>
 <section class="panel">
  <div class="head"><h2>3D projection · Three.js</h2><span class="tag">8D → 3D</span></div>
@@ -133,6 +134,13 @@ new p5(p=>{
  };
  p.windowResized=()=>{p.resizeCanvas(Math.max(280,document.getElementById('p5view').clientWidth),260);p.redraw()};
 });
+document.querySelectorAll('#mobileNav button').forEach(btn=>btn.addEventListener('click',()=>{
+document.body.dataset.mobileView=btn.dataset.view;
+document.querySelectorAll('#mobileNav button').forEach(b=>b.classList.toggle('active',b===btn));
+if(btn.dataset.view==='space')setTimeout(resizeThree,30);
+if(btn.dataset.view==='compare'&&window.redrawSemantic2d)window.redrawSemantic2d();
+}));
+document.body.dataset.mobileView='space';
 window.addEventListener('resize',resizeThree);
 initThree();updateDetails();
 </script>
