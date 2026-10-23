@@ -6,6 +6,8 @@ on:
     paths:
       - "index.html"
       - "space.html"
+      - "cube.html"
+      - "semantic-space.js"
       - "data/**"
       - "assets/**"
       - ".github/workflows/dep.yml"
@@ -38,6 +40,8 @@ jobs:
           mkdir -p _site
           cp index.html _site/index.html
           cp space.html _site/space.html
+          cp cube.html _site/cube.html
+          cp semantic-space.js _site/semantic-space.js
           cp -R data _site/data
           if [ -d assets ]; then cp -R assets _site/assets; fi
 
